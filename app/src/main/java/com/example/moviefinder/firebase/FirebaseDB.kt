@@ -25,7 +25,7 @@ class FirestoreMovieDataSource {
     }
 
     fun getAll(): Flow<List<Movie>> = callbackFlow {
-        val listener = collection.addSnapshotListener { snapshot, error ->
+        val listener = collection.limit(500).addSnapshotListener { snapshot, error ->
             if (error != null) {
                 close(error)
                 return@addSnapshotListener
@@ -48,6 +48,7 @@ class MovieRepository(
     private val dataSource: FirestoreMovieDataSource = FirestoreMovieDataSource()
 ) {
     val movies = dataSource.getAll()
+
     suspend fun insert(movie: Movie) = dataSource.insert(movie)
     suspend fun delete(movieId: String) = dataSource.delete(movieId)
 }

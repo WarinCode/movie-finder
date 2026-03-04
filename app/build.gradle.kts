@@ -70,5 +70,5 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.6")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
-    implementation("io.coil-kt.coil3:coil-compose:3.4.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }
