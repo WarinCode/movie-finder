@@ -1,63 +1,60 @@
 package com.example.moviefinder.model
 
-import com.google.firebase.firestore.PropertyName
-import com.google.gson.annotations.SerializedName
-
-data class Movie(
-    val adult: Boolean,
-    val backdropPath: String?,
-    val belongsToCollection: BelongToCollection?,
-    val budget: Int,
-    val genres: List<Genres>,
-    val homepage: String,
-    val id: Int,
-    val imdbId: String,
-    val originCountry: List<String>,
-    val originalLanguage: String,
-    val originalTitle: String,
-    val overview: String,
-    val popularity: Double,
-    val posterPath: String?,
-    val productionCompanies: List<ProductionCompanies>,
-    val productionCountries: List<ProductionCountries>,
-    val releaseDate: String,
-    val revenue: Long,
-    val runtime: Int,
-    val spokenLanguages: List<SpokenLanguages>,
-    val status: String,
-    val tagline: String,
-    val title: String,
-    val video: Boolean,
-    val voteAverage: Double,
-    val voteCount: Int,
+data class Movie (
+    val adult: Boolean = false,
+    val backdrop_path: String? = null,
+    val belongs_to_collection: BelongsToCollection? = null,
+    val budget: Long = 0,
+    val genres: List<Genre> = emptyList(),
+    val homepage: String? = null,
+    val id: Any? = null,
+    val imdb_id: String = "",
+    val origin_country: List<String> = emptyList(),
+    val original_language: String = "",
+    val original_title: String = "",
+    val overview: String? = null,
+    val popularity: Double = 0.0,
+    val poster_path: String? = null,
+    val production_companies: List<ProductionCompany> = emptyList(),
+    val production_countries: List<ProductionCountry> = emptyList(),
+    val release_date: String = "",
+    val revenue: Long = 0,
+    val runtime: Long = 0,
+    val spoken_languages: List<SpokenLanguage> = emptyList(),
+    val status: String? = null,
+    val tagline: String = "",
+    val title: String = "",
+    val video: Boolean = false,
+    val vote_average: Double = 0.0,
+    val vote_count: Long = 0
 )
 
-data class BelongToCollection (
-    val id: Int,
-    val name: String,
-    val poster_path: String,
-    val backdrop_path: String,
+data class BelongsToCollection (
+    val id: Long = 0,
+    val name: String = "",
+    val poster_path: String? = null,
+    val backdrop_path: String? = null
 )
 
-data class Genres (
-    val id: Int,
-    val name: String
+data class Genre (
+    val id: Long = 0,
+    val name: String? = null,
 )
 
-data class ProductionCompanies (
-    val id: Int,
-    val logo_path: String?,
-    val name: String,
-    val original_country: String,
+data class ProductionCompany (
+    val id: Long = 0,
+    val logo_path: String? = null,
+    val name: String = "",
+    val origin_country: String? = null,
 )
 
-data class ProductionCountries (
-    val iso_3166_1: String,
-    val name: String,
+data class ProductionCountry (
+    val iso3166_1: String? = null,
+    val name: String? = null,
 )
 
-data class SpokenLanguages (
-    val englist_name: String,
-    val iso_639_1: String,
-    val name: String,
+data class SpokenLanguage (
+    val english_name: String? = null,
+    val iso639_1: String = "",
+    val name: String = "",
 )

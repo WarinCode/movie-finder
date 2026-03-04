@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -40,6 +41,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.firebasekotlin.screen.SignInScreen
 import com.example.moviefinder.auth.AuthViewModel
+import com.example.moviefinder.firebase.uploadJsonToFirestore
 import com.example.moviefinder.screen.HistoryScreen
 import com.example.moviefinder.screen.HomeScreen
 import com.example.moviefinder.screen.LikeScreen
@@ -52,6 +54,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+//            uploadJsonToFirestore(LocalContext.current)
             MovieFinderTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
                     LayoutScreen()

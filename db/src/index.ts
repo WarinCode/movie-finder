@@ -1,5 +1,4 @@
 import { type BunFile } from "bun";
-import camelcaseKeys from "camelcase-keys";
 
 const token: string = Bun.env.TMDB_TOKEN as string;
 const options: RequestInit = {
@@ -11,7 +10,7 @@ const options: RequestInit = {
 };
 
 const promises: Promise<Response>[] = [];
-const totalMovies: number = 10000;
+const totalMovies: number = 30000;
 for (let i: number = 1; i <= totalMovies; i++) {
   promises.push(fetch(`https://api.themoviedb.org/3/movie/${i}`, options));
 }
@@ -26,11 +25,11 @@ for (const result of results.values()) {
     if ("status_code" in data || "status_message" in data) {
       continue;
     }
-    availableItems.push(data);
+    availableItems.push({ ...data, id: "" });
   }
 }
 // console.log(availableItems);
 console.log(`จำนวนหนังทั้งหมด: ${availableItems.length}`);
 
 const file: BunFile = Bun.file("./data/movie_details.json");
-file.write(JSON.stringify(camelcaseKeys(availableItems), null, 2));
+file.write(JSON.stringify(availableItems, null, 2));

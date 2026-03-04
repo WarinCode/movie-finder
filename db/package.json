@@ -7,11 +7,8 @@
   "peerDependencies": {
     "typescript": "^5"
   },
+  "private": true,
   "scripts": {
     "dev": "bun run ./src/index.ts"
-  },
-  "private": true,
-  "dependencies": {
-    "camelcase-keys": "^10.0.2"
   }
 }
