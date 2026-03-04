@@ -213,7 +213,7 @@ fun SignInScreen(
         ) {
             HorizontalDivider(modifier = Modifier.weight(1f))
             Text(
-                text = "OR",
+                text = "or sign in with",
                 modifier = Modifier.padding(horizontal = 16.dp),
                 color = Color.Gray,
                 fontSize = 14.sp

@@ -3,6 +3,7 @@ package com.example.moviefinder.screen
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,9 +45,13 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.graphics.fromColorLong
 import androidx.compose.ui.layout.ContentScale
+import androidx.navigation.NavController
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier){
+fun HomeScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier
+){
     val movieVM = viewModel<MovieViewModel>()
     val movies by movieVM.movies.collectAsState(initial = emptyList())
 
@@ -73,19 +78,29 @@ fun HomeScreen(modifier: Modifier = Modifier){
             items = movies.sortedBy { movie -> movie.poster_path !is String },
             key = { movie -> movie.imdb_id }
         ) { movie ->
-            MovieCard(movie)
+            MovieCard(
+                movie = movie,
+                onClick = {
+                    navController.navigate("movie-detail/${movie.id}")
+                }
+            )
         }
     }
 }
 
 @Composable
-fun MovieCard(movie: Movie, modifier: Modifier = Modifier){
+fun MovieCard(
+    movie: Movie,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
     Column (
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .fillMaxWidth()
             .background(Color(0xFFE8E8E8))
+            .clickable { onClick() }
     ) {
         if (movie.poster_path != null) {
             AsyncImage(
@@ -109,7 +124,6 @@ fun MovieCard(movie: Movie, modifier: Modifier = Modifier){
                 fontWeight = FontWeight.Bold,
                 modifier = modifier.padding(start = 18.dp)
             )
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,

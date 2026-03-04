@@ -1,19 +1,30 @@
 package com.example.moviefinder
 
+import SearchScreen
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AssistantPhoto
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Healing
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,20 +43,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import coil.compose.AsyncImage
 import com.example.firebasekotlin.screen.SignInScreen
 import com.example.moviefinder.auth.AuthViewModel
 import com.example.moviefinder.firebase.uploadJsonToFirestore
 import com.example.moviefinder.screen.HistoryScreen
 import com.example.moviefinder.screen.HomeScreen
 import com.example.moviefinder.screen.LikeScreen
+import com.example.moviefinder.screen.MovieDetailScreen
 import com.example.moviefinder.screen.SignUpScreen
 import com.example.moviefinder.ui.theme.MovieFinderTheme
 
@@ -68,23 +84,36 @@ class MainActivity : ComponentActivity() {
 fun LayoutScreen(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf(0) }
-    val items = listOf("Home", "Like", "History")
-    val iconsmenu = listOf(Icons.Default.Home, Icons.Default.AssistantPhoto, Icons.Default.History)
+    val items = listOf("Home", "Search", "Like", "History")
+    val iconsmenu = listOf(Icons.Default.Home, Icons.Default.Search, Icons.Default.FavoriteBorder, Icons.Default.History)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val authVM = viewModel<AuthViewModel>()
     val startDestination = if (authVM.isLoggedIn) "home" else "signin"
+//    val startDestination = "movie-detail/0AjcBEcd9WjIgOl59Wqs"
 
     Scaffold(
         topBar = {
-            if (currentRoute !in listOf("signin", "signup")) TopAppBar(
+            val user = authVM.currentUser
+            val defaultAvatar = "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg"
+
+            if (currentRoute !in listOf("signin", "signup") && user != null) TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF1A1919),
                     titleContentColor = Color(0xFFFEFFFF)
                 ),
                 title = { Text("Movie Finder") },
                 actions = {
+                    Text("${user.displayName}", color = Color.White)
+                    Spacer(modifier = modifier.width(12.dp))
+                    AsyncImage(
+                        model = user.photoUrl ?: defaultAvatar,
+                        contentDescription = user.displayName,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(50.dp))
+                    )
                     IconButton(onClick = {
                         authVM.logout()
                         navController.navigate("signin")
@@ -110,8 +139,9 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                         onClick = { selectedItem = index
                             when(index) {
                                 0 -> navController.navigate("home")
-                                1 -> navController.navigate("like")
-                                2 -> navController.navigate("history")
+                                1 -> navController.navigate("search")
+                                2 -> navController.navigate("like")
+                                3 -> navController.navigate("history")
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
@@ -154,9 +184,22 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                     }
                 )
             }
-            composable(route = "home") { HomeScreen() }
-            composable(route = "history") { HistoryScreen() }
+            composable(route = "home") {
+                HomeScreen(navController = navController)
+            }
+            composable(route = "search"){ SearchScreen() }
+            composable(
+                route = "movie-detail/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ){
+                stackEntry -> val id = stackEntry.arguments?.getString("id") ?: ""
+                MovieDetailScreen(
+                    id = id,
+                    onBack = { navController.navigate("home") }
+                )
+            }
             composable (route = "like"){ LikeScreen() }
+            composable(route = "history") { HistoryScreen() }
         }
     }
 }

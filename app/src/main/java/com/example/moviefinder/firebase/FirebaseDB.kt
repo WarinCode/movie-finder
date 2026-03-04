@@ -25,7 +25,7 @@ class FirestoreMovieDataSource {
     }
 
     fun getAll(): Flow<List<Movie>> = callbackFlow {
-        val listener = collection.limit(500).addSnapshotListener { snapshot, error ->
+        val listener = collection.limit(300).addSnapshotListener { snapshot, error ->
             if (error != null) {
                 close(error)
                 return@addSnapshotListener
@@ -42,12 +42,34 @@ class FirestoreMovieDataSource {
             listener.remove()
         }
     }
+
+    fun getById(id: String): Flow<Movie?> = callbackFlow {
+        val listener = collection.document(id).addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                close(error)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                val movie = snapshot.toObject(Movie::class.java)?.copy(id = snapshot.id)
+                trySend(movie)
+            } else {
+                trySend(null)
+            }
+        }
+
+        awaitClose {
+            listener.remove()
+        }
+    }
 }
 
 class MovieRepository(
     private val dataSource: FirestoreMovieDataSource = FirestoreMovieDataSource()
 ) {
     val movies = dataSource.getAll()
+
+    fun getById(id: String) = dataSource.getById(id)
 
     suspend fun insert(movie: Movie) = dataSource.insert(movie)
     suspend fun delete(movieId: String) = dataSource.delete(movieId)
@@ -56,6 +78,10 @@ class MovieRepository(
 class MovieViewModel(
     private val repository: MovieRepository = MovieRepository()) : ViewModel() {
     val movies = repository.movies
+
+    fun getById(id: String): Flow<Movie?> {
+        return repository.getById(id)
+    }
 
     fun insertMovie(movie: Movie) {
         viewModelScope.launch {
