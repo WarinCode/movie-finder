@@ -2,6 +2,7 @@ package com.example.moviefinder.firebase
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviefinder.model.Favorite
 import com.example.moviefinder.model.Movie
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -13,16 +14,7 @@ import kotlinx.coroutines.launch
 import kotlin.String
 
 class FirestoreMovieDataSource {
-
     private val collection = Firebase.firestore.collection("movies")
-
-    suspend fun insert(movie: Movie) {
-        collection.add(movie).await()
-    }
-
-    suspend fun delete(movieId: String) {
-        collection.document(movieId).delete().await()
-    }
 
     fun getAll(): Flow<List<Movie>> = callbackFlow {
         val listener = collection.limit(300).addSnapshotListener { snapshot, error ->
@@ -44,7 +36,10 @@ class FirestoreMovieDataSource {
     }
 
     fun getById(id: String): Flow<Movie?> = callbackFlow {
-        val listener = collection.document(id).addSnapshotListener { snapshot, error ->
+        val listener = collection
+            .document(id)
+            .addSnapshotListener { snapshot, error ->
+
             if (error != null) {
                 close(error)
                 return@addSnapshotListener
@@ -70,9 +65,6 @@ class MovieRepository(
     val movies = dataSource.getAll()
 
     fun getById(id: String) = dataSource.getById(id)
-
-    suspend fun insert(movie: Movie) = dataSource.insert(movie)
-    suspend fun delete(movieId: String) = dataSource.delete(movieId)
 }
 
 class MovieViewModel(
@@ -82,13 +74,69 @@ class MovieViewModel(
     fun getById(id: String): Flow<Movie?> {
         return repository.getById(id)
     }
+}
 
-    fun insertMovie(movie: Movie) {
-        viewModelScope.launch {
-            repository.insert(movie)}
+class FirestoreFavoriteDataSource {
+
+    private val collection = Firebase.firestore.collection("favorites")
+
+    suspend fun insert(favorite: Favorite) {
+        val docId = "${favorite.userId}_${favorite.movieId}"
+        collection.document(docId).set(favorite).await()
     }
 
-    fun deleteMovie(movieId: String) {
-        viewModelScope.launch { repository.delete(movieId) }
+    suspend fun delete(userId: String, movieId: String) {
+        val docId = "${userId}_${movieId}"
+        collection.document(docId).delete().await()
+    }
+
+    fun getAllById(userId: String): Flow<List<Favorite>> = callbackFlow {
+        val listener = collection
+            .whereEqualTo("userId", userId)
+            .addSnapshotListener { snapshot, error ->
+
+            if (error != null) {
+                close(error)
+                return@addSnapshotListener
+            }
+
+            val favorites = snapshot?.documents?.mapNotNull { doc ->
+                doc.toObject(Favorite::class.java)
+            } ?: emptyList()
+
+            trySend(favorites)
+        }
+
+        awaitClose {
+            listener.remove()
+        }
+    }
+}
+
+class FavoriteRepository(
+    private val dataSource: FirestoreFavoriteDataSource = FirestoreFavoriteDataSource()
+) {
+    fun getAllById(userId: String) = dataSource.getAllById(userId)
+    suspend fun insert(favorite: Favorite) = dataSource.insert(favorite)
+    suspend fun delete(userId: String, movieId: String) = dataSource.delete(userId, movieId)
+}
+
+class FavoriteViewModel(
+    private val repository: FavoriteRepository = FavoriteRepository()
+) : ViewModel() {
+    fun getAllById(userId: String): Flow<List<Favorite>> {
+        return repository.getAllById(userId)
+    }
+
+    fun insertFavorite(favorite: Favorite) {
+        viewModelScope.launch {
+            repository.insert(favorite)
+        }
+    }
+
+    fun deleteFavorite(userId: String, movieId: String) {
+        viewModelScope.launch {
+            repository.delete(userId, movieId)
+        }
     }
 }

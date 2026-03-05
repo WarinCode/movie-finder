@@ -1,11 +1,9 @@
 package com.example.moviefinder.screen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -38,12 +35,8 @@ import coil.compose.AsyncImage
 import com.example.moviefinder.R
 import com.example.moviefinder.firebase.MovieViewModel
 import com.example.moviefinder.model.Movie
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.ui.autofill.ContentType
-import androidx.compose.ui.graphics.fromColorLong
 import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.NavController
 
@@ -76,11 +69,11 @@ fun HomeScreen(
 
         items(
             items = movies.sortedBy { movie -> movie.poster_path !is String },
-            key = { movie -> movie.imdb_id }
+            key = { movie -> movie.id.toString() }
         ) { movie ->
             MovieCard(
                 movie = movie,
-                onClick = {
+                onNavigateToMovieDetail = {
                     navController.navigate("movie-detail/${movie.id}")
                 }
             )
@@ -91,7 +84,7 @@ fun HomeScreen(
 @Composable
 fun MovieCard(
     movie: Movie,
-    onClick: () -> Unit,
+    onNavigateToMovieDetail: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Column (
@@ -100,7 +93,7 @@ fun MovieCard(
         modifier = modifier
             .fillMaxWidth()
             .background(Color(0xFFE8E8E8))
-            .clickable { onClick() }
+            .clickable { onNavigateToMovieDetail() }
     ) {
         if (movie.poster_path != null) {
             AsyncImage(
@@ -151,7 +144,7 @@ fun MovieCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.CalendarMonth,
-                        contentDescription = "Date",
+                        contentDescription = "Relase Date",
                     )
                 }
                 Text("${movie.release_date}")

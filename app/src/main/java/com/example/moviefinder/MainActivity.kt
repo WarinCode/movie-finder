@@ -84,20 +84,19 @@ class MainActivity : ComponentActivity() {
 fun LayoutScreen(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf(0) }
-    val items = listOf("Home", "Search", "Like", "History")
+    val items = listOf("home", "search", "like", "history")
     val iconsmenu = listOf(Icons.Default.Home, Icons.Default.Search, Icons.Default.FavoriteBorder, Icons.Default.History)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val authVM = viewModel<AuthViewModel>()
+    val user = authVM.currentUser
     val startDestination = if (authVM.isLoggedIn) "home" else "signin"
 //    val startDestination = "movie-detail/0AjcBEcd9WjIgOl59Wqs"
+    val defaultAvatar = "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg"
 
     Scaffold(
         topBar = {
-            val user = authVM.currentUser
-            val defaultAvatar = "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg"
-
             if (currentRoute !in listOf("signin", "signup") && user != null) TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF1A1919),
@@ -105,18 +104,20 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                 ),
                 title = { Text("Movie Finder") },
                 actions = {
-                    Text("${user.displayName}", color = Color.White)
+                    Text("${user.displayName ?: "User"}", color = Color.White)
                     Spacer(modifier = modifier.width(12.dp))
                     AsyncImage(
                         model = user.photoUrl ?: defaultAvatar,
-                        contentDescription = user.displayName,
+                        contentDescription = user.displayName ?: "Profile user",
                         modifier = Modifier
                             .size(40.dp)
                             .clip(RoundedCornerShape(50.dp))
                     )
                     IconButton(onClick = {
                         authVM.logout()
-                        navController.navigate("signin")
+                        navController.navigate("signin") {
+                            popUpTo("signin") { inclusive = true }
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -187,7 +188,9 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
             composable(route = "home") {
                 HomeScreen(navController = navController)
             }
-            composable(route = "search"){ SearchScreen() }
+            composable(route = "search"){
+                SearchScreen(navController = navController)
+            }
             composable(
                 route = "movie-detail/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.StringType })
@@ -195,10 +198,14 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                 stackEntry -> val id = stackEntry.arguments?.getString("id") ?: ""
                 MovieDetailScreen(
                     id = id,
-                    onBack = { navController.navigate("home") }
+                    onBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
-            composable (route = "like"){ LikeScreen() }
+            composable (route = "like"){
+                LikeScreen(navController = navController)
+            }
             composable(route = "history") { HistoryScreen() }
         }
     }

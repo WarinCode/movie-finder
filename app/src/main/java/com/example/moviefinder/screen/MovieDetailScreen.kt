@@ -1,6 +1,5 @@
 package com.example.moviefinder.screen
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,10 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.WhereToVote
 import androidx.compose.material3.Icon
@@ -44,7 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.moviefinder.auth.AuthViewModel
+import com.example.moviefinder.firebase.FavoriteViewModel
 import com.example.moviefinder.firebase.MovieViewModel
+import com.example.moviefinder.model.Favorite
 import com.example.moviefinder.model.Movie
 import kotlinx.coroutines.flow.Flow
 
@@ -68,7 +73,14 @@ fun MovieDetailScreen(
             )
         }
     } else {
+        val movieData = movie as Movie
         val scrollState = rememberScrollState()
+        val authVM = viewModel<AuthViewModel>()
+        val userId = authVM.currentUser?.uid ?: ""
+
+        val favoriteVM = viewModel<FavoriteViewModel>()
+        val favorites by favoriteVM.getAllById(userId).collectAsState(initial = emptyList())
+        var liked = favorites.any { fav -> fav.movieId == movieData.id.toString() }
 
         Column(
             modifier = modifier
@@ -77,7 +89,7 @@ fun MovieDetailScreen(
                 .verticalScroll(scrollState)
         ) {
             AsyncImage(
-                model = "https://image.tmdb.org/t/p/original/${movie!!.poster_path}",
+                model = "https://image.tmdb.org/t/p/original/${movieData.poster_path}",
                 contentDescription = movie!!.title,
                 contentScale = ContentScale.Crop,
                 modifier = modifier
@@ -86,7 +98,7 @@ fun MovieDetailScreen(
             )
 
             Spacer(modifier.height(20.dp))
-            Text("${movie!!.title}",
+            Text("${movieData.title}",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -107,7 +119,7 @@ fun MovieDetailScreen(
                         modifier = modifier.size(35.dp)
                     )
                 }
-                Text("Rating: ${movie!!.vote_average}", fontSize = 16.sp)
+                Text("Rating: ${movieData.vote_average}", fontSize = 16.sp)
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -125,31 +137,27 @@ fun MovieDetailScreen(
                         modifier = modifier.size(31.dp)
                     )
                 }
-                Text("Vote: ${movie!!.vote_count}", fontSize = 16.sp)
+                Text("Vote: ${movieData.vote_count}", fontSize = 16.sp)
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,
                 modifier = modifier.fillMaxWidth(),
             ) {
-                IconButton(
-                    onClick = {},
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CalendarMonth,
-                        contentDescription = "Date",
-                        modifier = modifier.size(31.dp)
-                    )
-                }
-                Text("Relase Date: ${movie!!.release_date}", fontSize = 16.sp)
+                Icon(
+                    imageVector = Icons.Default.CalendarMonth,
+                    contentDescription = "Date",
+                    modifier = modifier.size(31.dp)
+                )
+                Text("Relase Date: ${movieData.release_date}", fontSize = 16.sp)
             }
-            movie!!.genres.let {
+            movieData.genres.let {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,
                     modifier = modifier.fillMaxWidth()
                 ) {
-                    movie!!.genres.forEach { genres ->
+                    movieData.genres.forEach { genres ->
                         OutlinedButton(
                             onClick = {},
                             modifier = modifier.padding(5.dp)
@@ -160,12 +168,47 @@ fun MovieDetailScreen(
                 }
             }
             Spacer(modifier.height(12.dp))
-            Text("${movie!!.overview}",
+            Text("${movieData.overview}",
                 modifier = modifier.fillMaxWidth(),
                 fontSize = 17.sp,
                 lineHeight = 25.sp,
             )
             Spacer(modifier.height(20.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = modifier.fillMaxWidth(),
+            ){
+                IconButton(
+                    onClick = onBack,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBackIosNew,
+                        contentDescription = "Back to home",
+                        modifier = modifier.size(31.dp)
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        liked = !liked
+
+                        if (liked) {
+                            favoriteVM.insertFavorite(
+                                Favorite(userId = userId, movieId = movieData.id.toString(), liked = liked)
+                            )
+                        } else {
+                            favoriteVM.deleteFavorite(userId = userId, movieId = movieData.id.toString())
+                        }}
+                ) {
+                    Icon(
+                        imageVector = if (liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        tint = if (liked) Color.Red else Color.Black,
+                        contentDescription = "Like",
+                        modifier = modifier.size(35.dp)
+                    )
+                }
+            }
         }
     }
 }
