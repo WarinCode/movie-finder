@@ -1,6 +1,5 @@
 package com.example.moviefinder.screen
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,15 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -30,15 +25,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -51,7 +41,6 @@ import com.example.moviefinder.firebase.FavoriteViewModel
 import com.example.moviefinder.firebase.MovieViewModel
 import com.example.moviefinder.model.Favorite
 import com.example.moviefinder.model.Movie
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun MovieDetailScreen(
@@ -80,7 +69,7 @@ fun MovieDetailScreen(
 
         val favoriteVM = viewModel<FavoriteViewModel>()
         val favorites by favoriteVM.getAllById(userId).collectAsState(initial = emptyList())
-        var liked = favorites.any { fav -> fav.movieId == movieData.id.toString() }
+        var isLiked = favorites.any { fav -> fav.movieId == movieData.id.toString() }
 
         Column(
             modifier = modifier
@@ -98,7 +87,7 @@ fun MovieDetailScreen(
             )
 
             Spacer(modifier.height(20.dp))
-            Text("${movieData.title}",
+            Text(movieData.title,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -146,10 +135,10 @@ fun MovieDetailScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.CalendarMonth,
-                    contentDescription = "Date",
+                    contentDescription = "Release date",
                     modifier = modifier.size(31.dp)
                 )
-                Text("Relase Date: ${movieData.release_date}", fontSize = 16.sp)
+                Text("Release Date: ${movieData.release_date}", fontSize = 16.sp)
             }
             movieData.genres.let {
                 Row(
@@ -191,19 +180,26 @@ fun MovieDetailScreen(
                 }
                 IconButton(
                     onClick = {
-                        liked = !liked
+                        isLiked = !isLiked
 
-                        if (liked) {
+                        if (isLiked) {
                             favoriteVM.insertFavorite(
-                                Favorite(userId = userId, movieId = movieData.id.toString(), liked = liked)
+                                Favorite(
+                                    userId = userId,
+                                    movieId = movieData.id.toString(),
+                                    isLiked = isLiked
+                                )
                             )
                         } else {
-                            favoriteVM.deleteFavorite(userId = userId, movieId = movieData.id.toString())
+                            favoriteVM.deleteFavorite(
+                                userId = userId,
+                                movieId = movieData.id.toString()
+                            )
                         }}
                 ) {
                     Icon(
-                        imageVector = if (liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        tint = if (liked) Color.Red else Color.Black,
+                        imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        tint = if (isLiked) Color.Red else Color.Black,
                         contentDescription = "Like",
                         modifier = modifier.size(35.dp)
                     )

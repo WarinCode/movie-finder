@@ -1,8 +1,6 @@
-package com.example.firebasekotlin.screen
+package com.example.moviefinder.screen
 
 import android.app.Activity
-import android.content.Context
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -28,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
-import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -56,7 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moviefinder.R
 import com.example.moviefinder.auth.AuthViewModel
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+
 
 @Composable
 fun SignInScreen(
@@ -68,7 +64,14 @@ fun SignInScreen(
     var password by remember { mutableStateOf("") }
     var passVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val activity = LocalContext.current as Activity
+    val activity = remember(context) {
+        var currentContext = context
+        while (currentContext is android.content.ContextWrapper) {
+        if (currentContext is Activity) break
+        currentContext = currentContext.baseContext
+    }
+        currentContext as? Activity
+    }
     var showForgotDialog by remember { mutableStateOf(false) }
     var resetEmail by remember { mutableStateOf("") }
 
@@ -93,7 +96,7 @@ fun SignInScreen(
             title = { Text("Forgot password") },
             text = {
                 Column {
-                    Text("กรอก Email ที่ใช้สมัครสมาชิก\nระบบจะส่งลิงก์รีเซ็ตรหัสผ่านให้")
+                    Text("Enter the email address you used to register The system will send you a password reset link")
                     Spacer(Modifier.height(12.dp))
                     OutlinedTextField(
                         value = resetEmail,
@@ -131,11 +134,16 @@ fun SignInScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Movie", fontSize = 60.sp, fontWeight = FontWeight.Bold)
-        Text("Finder", fontSize = 54.sp, fontWeight = FontWeight.Bold)
+        Text("Movie",
+            fontSize = 60.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text("Finder",
+            fontSize = 54.sp,
+            fontWeight = FontWeight.Bold
+        )
         Spacer(Modifier.height(45.dp))
 
-        //------------------- TextField กรอก Email และ Password -------------------
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -145,7 +153,7 @@ fun SignInScreen(
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.Email,
-                        contentDescription = "Visibility"
+                        contentDescription = "Email"
                     )
                 }
             },
@@ -161,7 +169,7 @@ fun SignInScreen(
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = if (passVisible) Icons.Default.LockOpen else Icons.Default.Lock,
-                        contentDescription = "Visibility"
+                        contentDescription = "Password"
                     )
                 }
             },
@@ -177,8 +185,10 @@ fun SignInScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        //------------------- ปุ่มลืมรหัสผ่าน -------------------
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
             TextButton(onClick = {
                 resetEmail = email
                 showForgotDialog = true
@@ -186,29 +196,34 @@ fun SignInScreen(
                 Text("Forgot password?", color = Color.Blue)
             }
         }
+
         Spacer(Modifier.height(12.dp))
 
-        //------------------- ปุ่มเข้าสู่ระบบ -------------------
         Button(
-            onClick = {
-                authVM.loginWithEmail(email, password)
-            },
+            onClick = { authVM.loginWithEmail(email, password) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
             shape = RoundedCornerShape(6.dp),
-            enabled = email.isNotBlank() && password.isNotBlank(),
+            enabled = email.isNotBlank() && password.isNotBlank()
+                    && email.contains("@") && password.length >= 8,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF282828),
                 contentColor = Color.White
             )
-        ) { Text("Sign In", color = Color.White, fontWeight = FontWeight.Bold) }
+        ) {
+            Text("Sign In",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
         Spacer(Modifier.height(12.dp))
 
-        //------------------- ปุ่มไปหน้าลงทะเบียน -------------------
         Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 35.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 35.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             HorizontalDivider(modifier = Modifier.weight(1f))
@@ -221,16 +236,13 @@ fun SignInScreen(
             HorizontalDivider(modifier = Modifier.weight(1f))
         }
 
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = modifier.width(250.dp),
         ) {
             IconButton(
-                onClick = {
-                    authVM.signInWithGoogle(context)
-                },
+                onClick = { authVM.signInWithGoogle(context) },
                 modifier = Modifier
                     .size(56.dp)
                     .border(1.dp, Color.LightGray, CircleShape)
@@ -242,9 +254,7 @@ fun SignInScreen(
                 )
             }
             IconButton(
-                onClick = {
-                    authVM.signInWithMicrosoft(activity)
-                },
+                onClick = { activity?.let { authVM.signInWithMicrosoft(activity) } },
                 modifier = Modifier
                     .size(56.dp)
                     .border(1.dp, Color.LightGray, CircleShape)
@@ -256,9 +266,7 @@ fun SignInScreen(
                 )
             }
             IconButton(
-                onClick = {
-                    authVM.signInWithGithub(activity)
-                },
+                onClick = { activity?.let { authVM.signInWithGithub(activity) } },
                 modifier = Modifier
                     .size(56.dp)
                     .border(1.dp, Color.LightGray, CircleShape)

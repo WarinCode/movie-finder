@@ -1,10 +1,8 @@
 package com.example.moviefinder.screen
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,6 +21,7 @@ import androidx.navigation.NavController
 import com.example.moviefinder.auth.AuthViewModel
 import com.example.moviefinder.firebase.FavoriteViewModel
 import com.example.moviefinder.firebase.MovieViewModel
+import com.example.moviefinder.model.Favorite
 
 @Composable
 fun LikeScreen(
@@ -70,7 +69,10 @@ fun LikeScreen(
                 movie?.let { movieData ->
                     MovieCard(
                         movie = movieData,
-                        onNavigateToMovieDetail = { navController.navigate("movie-detail/${movieData.id}") }
+                        userId = userId,
+                        onNavigateToMovieDetail = {
+                            navController.navigate("movie-detail/${movieData.id}")
+                        }
                     )
                 }
             }

@@ -39,12 +39,18 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.NavController
+import com.example.moviefinder.auth.AuthViewModel
+import com.example.moviefinder.firebase.HistoryViewModel
+import com.example.moviefinder.model.History
+import com.google.firebase.Timestamp
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ){
+    val authVM = viewModel<AuthViewModel>()
+    val userId = authVM.currentUser?.uid ?: ""
     val movieVM = viewModel<MovieViewModel>()
     val movies by movieVM.movies.collectAsState(initial = emptyList())
 
@@ -73,6 +79,7 @@ fun HomeScreen(
         ) { movie ->
             MovieCard(
                 movie = movie,
+                userId = userId,
                 onNavigateToMovieDetail = {
                     navController.navigate("movie-detail/${movie.id}")
                 }
@@ -84,16 +91,27 @@ fun HomeScreen(
 @Composable
 fun MovieCard(
     movie: Movie,
+    userId: String,
     onNavigateToMovieDetail: () -> Unit,
     modifier: Modifier = Modifier
 ){
+    val historyVM = viewModel<HistoryViewModel>()
+
     Column (
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .fillMaxWidth()
             .background(Color(0xFFE8E8E8))
-            .clickable { onNavigateToMovieDetail() }
+            .clickable {
+                historyVM.insertHistory(
+                    History(
+                        userId = userId,
+                        movieId = movie.id.toString(),
+                        viewedAt = Timestamp.now()
+                    ))
+                onNavigateToMovieDetail()
+            }
     ) {
         if (movie.poster_path != null) {
             AsyncImage(
@@ -144,10 +162,10 @@ fun MovieCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.CalendarMonth,
-                        contentDescription = "Relase Date",
+                        contentDescription = "Release Date",
                     )
                 }
-                Text("${movie.release_date}")
+                Text(movie.release_date)
             }
         }
     }

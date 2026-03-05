@@ -7,21 +7,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Password
-import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.PeopleAlt
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -72,11 +68,16 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Movie", fontSize = 60.sp, fontWeight = FontWeight.Bold)
-        Text("Finder", fontSize = 54.sp, fontWeight = FontWeight.Bold)
+        Text("Movie",
+            fontSize = 60.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text("Finder",
+            fontSize = 54.sp,
+            fontWeight = FontWeight.Bold
+        )
         Spacer(Modifier.height(32.dp))
 
-        //------------------- TextField กรอกสมัครสมาชิก -------------------
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -85,7 +86,7 @@ fun SignUpScreen(
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.PeopleAlt,
-                        contentDescription = "Visibility"
+                        contentDescription = "Name"
                     )
                 }
             },
@@ -101,7 +102,7 @@ fun SignUpScreen(
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.Email,
-                        contentDescription = "Visibility"
+                        contentDescription = "Email"
                     )
                 }
             },
@@ -117,7 +118,7 @@ fun SignUpScreen(
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.Password,
-                        contentDescription = "Visibility"
+                        contentDescription = "Password"
                     )
                 }
             },
@@ -133,7 +134,7 @@ fun SignUpScreen(
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.Password,
-                        contentDescription = "Visibility"
+                        contentDescription = "Confirm password"
                     )
                 }
             },
@@ -144,7 +145,7 @@ fun SignUpScreen(
         Button(
             onClick = {
                 if (password != confirmPassword) {
-                    localError = "Password และ Confirm Password ไม่ตรงกัน"
+                    localError = "The password and confirm password do not match"
                     return@Button
                 }
                 localError = null
@@ -154,16 +155,24 @@ fun SignUpScreen(
                 .fillMaxWidth()
                 .height(50.dp),
             shape = RoundedCornerShape(6.dp),
-            enabled = email.isNotBlank() && password.isNotBlank(),
+            enabled = name.isNotBlank() && email.isNotBlank() && password.isNotBlank()
+                    && confirmPassword.isNotBlank() && password.length >= 8
+                    && confirmPassword.length >= 8 && password == confirmPassword,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF6282828),
                 contentColor = Color.White)
         ) {
-            Text("Create Account", fontWeight = FontWeight.Bold, color = Color.White)
+            Text("Create Account",
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
         }
         Spacer(Modifier.height(12.dp))
         TextButton(onClick = onNavigateToLogin) {
-            Text("Sign In", fontWeight = FontWeight.Bold, color = Color.Blue)
+            Text("Sign In",
+                fontWeight = FontWeight.Bold,
+                color = Color.Blue
+            )
         }
     }
 }

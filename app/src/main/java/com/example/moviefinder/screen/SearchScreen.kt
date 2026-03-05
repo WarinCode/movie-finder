@@ -1,3 +1,5 @@
+package com.example.moviefinder.screen
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,30 +25,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.moviefinder.auth.AuthViewModel
 import com.example.moviefinder.firebase.MovieViewModel
-import com.example.moviefinder.screen.MovieCard
 
 @Composable
 fun SearchScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val authVM = viewModel<AuthViewModel>()
     val movieVM = viewModel<MovieViewModel>()
     val movies by movieVM.movies.collectAsState(initial = emptyList())
+    val userId = authVM.currentUser?.uid ?: ""
     var searchQuery by remember { mutableStateOf("") }
 
     val filteredMovies = remember(searchQuery, movies) {
         if (searchQuery.isBlank()) {
             emptyList()
         } else {
-            movies.filter {
-                it.title.contains(searchQuery, ignoreCase = true) &&
-                        it.overview!!.contains(searchQuery, ignoreCase = true)
-            }
+            movies.filter { it.title.contains(searchQuery, ignoreCase = true) }
         }
     }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -57,9 +60,17 @@ fun SearchScreen(
             onValueChange = { searchQuery = it },
             label = { Text("Search movies") },
             modifier = Modifier.fillMaxWidth(),
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            trailingIcon = { if (searchQuery.isNotEmpty())
-                Icon(Icons.Default.Close, contentDescription = null, modifier = modifier.clickable { searchQuery = "" }) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null
+                )},
+            trailingIcon = { if (searchQuery.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    modifier = modifier.clickable { searchQuery = "" }
+                )}},
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Black,
@@ -70,8 +81,14 @@ fun SearchScreen(
         )
 
         if (searchQuery.isNotBlank() && filteredMovies.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No movies found for \"$searchQuery\"", color = Color.Gray)
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No movies found for \"$searchQuery\"",
+                    color = Color.Gray,
+                    fontSize = 23.sp
+                )
             }
         } else {
             LazyColumn(
@@ -82,6 +99,7 @@ fun SearchScreen(
                 items(filteredMovies) { movie ->
                     MovieCard(
                         movie = movie,
+                        userId = userId,
                         onNavigateToMovieDetail = { navController.navigate("movie-detail/${movie.id}") },
                     )
                 }
