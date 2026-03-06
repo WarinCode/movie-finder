@@ -15,6 +15,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moviefinder.auth.AuthViewModel
+import com.example.moviefinder.font.poppinsFamily
 
 @Composable
 fun SignUpScreen(
@@ -70,10 +72,12 @@ fun SignUpScreen(
     ) {
         Text("Movie",
             fontSize = 60.sp,
+            fontFamily = poppinsFamily,
             fontWeight = FontWeight.Bold
         )
         Text("Finder",
-            fontSize = 54.sp,
+            fontSize = 51.sp,
+            fontFamily = poppinsFamily,
             fontWeight = FontWeight.Bold
         )
         Spacer(Modifier.height(32.dp))
@@ -81,7 +85,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Enter your username") },
+            label = { Text("Enter your username", fontFamily = poppinsFamily) },
             leadingIcon = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -96,7 +100,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Enter your email") },
+            label = { Text("Enter your email", fontFamily = poppinsFamily) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             leadingIcon = {
                 IconButton(onClick = {}) {
@@ -112,7 +116,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Enter your password") },
+            label = { Text("Enter your password", fontFamily = poppinsFamily) },
             visualTransformation = PasswordVisualTransformation(),
             leadingIcon = {
                 IconButton(onClick = {}) {
@@ -128,7 +132,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = { Text("Enter your confirm password") },
+            label = { Text("Enter your confirm password", fontFamily = poppinsFamily) },
             visualTransformation = PasswordVisualTransformation(),
             leadingIcon = {
                 IconButton(onClick = {}) {
@@ -141,7 +145,7 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(35.dp))
         Button(
             onClick = {
                 if (password != confirmPassword) {
@@ -164,14 +168,16 @@ fun SignUpScreen(
         ) {
             Text("Create Account",
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color.White,
+                fontFamily = poppinsFamily,
             )
         }
         Spacer(Modifier.height(12.dp))
         TextButton(onClick = onNavigateToLogin) {
             Text("Sign In",
                 fontWeight = FontWeight.Bold,
-                color = Color.Blue
+                color = Color.Blue,
+                fontFamily = poppinsFamily,
             )
         }
     }

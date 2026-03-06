@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import com.example.moviefinder.auth.AuthViewModel
 import com.example.moviefinder.firebase.FavoriteViewModel
 import com.example.moviefinder.firebase.MovieViewModel
+import com.example.moviefinder.font.poppinsFamily
 import com.example.moviefinder.model.Favorite
 
 @Composable
@@ -57,6 +58,7 @@ fun LikeScreen(
             Text("My favorite movies",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = poppinsFamily,
                 textAlign = TextAlign.Center,
                 modifier = modifier
                     .fillMaxWidth()
@@ -67,7 +69,7 @@ fun LikeScreen(
                 val movie by movieVM.getById(favorite.movieId).collectAsState(initial = null)
 
                 movie?.let { movieData ->
-                    MovieCard(
+                    HorizontalMovieCard(
                         movie = movieData,
                         userId = userId,
                         onNavigateToMovieDetail = {

@@ -30,6 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.moviefinder.auth.AuthViewModel
 import com.example.moviefinder.firebase.MovieViewModel
+import com.example.moviefinder.font.poppinsFamily
 
 @Composable
 fun SearchScreen(
@@ -53,12 +54,12 @@ fun SearchScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Search movies") },
+            label = { Text("Search movies", fontFamily = poppinsFamily) },
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = {
                 Icon(
@@ -87,7 +88,8 @@ fun SearchScreen(
             ) {
                 Text("No movies found for \"$searchQuery\"",
                     color = Color.Gray,
-                    fontSize = 23.sp
+                    fontFamily = poppinsFamily,
+                    fontSize = 17.sp
                 )
             }
         } else {

@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,6 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moviefinder.auth.AuthViewModel
 import com.example.moviefinder.firebase.HistoryViewModel
 import com.example.moviefinder.firebase.MovieViewModel
+import com.example.moviefinder.font.poppinsFamily
 import com.example.moviefinder.model.History
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
@@ -68,6 +70,8 @@ fun HistoryScreen(
             Text("No viewing history",
                 fontSize = 21.sp,
                 textAlign = TextAlign.Center,
+                fontFamily = poppinsFamily,
+                color = Color.Gray,
                 modifier = modifier.fillMaxWidth()
             )
         }
@@ -78,18 +82,18 @@ fun HistoryScreen(
             AlertDialog(
                 icon = { Icon(Icons.Default.Warning, contentDescription = null) },
                 onDismissRequest = { showAllDeleteDialog = false },
-                title = { Text("Confirm Deletion") },
-                text = { Text("Do you want to delete all history?") },
+                title = { Text("Confirm Deletion", fontFamily = poppinsFamily) },
+                text = { Text("Do you want to delete all history?", fontFamily = poppinsFamily) },
                 confirmButton = {
                     TextButton(
                         onClick = {
                             historyVM.deleteAllHistories(userId)
                             showAllDeleteDialog = false
                         }
-                    ) { Text("Delete") }
+                    ) { Text("Delete", fontFamily = poppinsFamily) }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showAllDeleteDialog = false }) { Text("Cancel") }
+                    TextButton(onClick = { showAllDeleteDialog = false }) { Text("Cancel", fontFamily = poppinsFamily) }
                 },
             )
         }
@@ -100,11 +104,12 @@ fun HistoryScreen(
                 .padding(20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier.height(20.dp))
+            Spacer(modifier.height(13.dp))
             Text("Viewing history",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
+                fontFamily = poppinsFamily,
                 modifier = modifier.fillMaxWidth()
             )
             Spacer(modifier.height(20.dp))
@@ -113,12 +118,18 @@ fun HistoryScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = modifier.fillMaxWidth()
             ) {
-                Text("Total views: ${histories.size}")
+                Text("Total views: ${histories.size}",
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold,
+                )
                 Row() {
                     TextButton(
                         onClick = { sortedBy = if (sortedBy == "descending") "ascending" else "descending" }
                     ) {
-                        Text(sortedBy)
+                        Text(sortedBy,
+                            fontFamily = poppinsFamily,
+                            color = Color.Blue
+                        )
                     }
                     IconButton(
                         onClick = { showAllDeleteDialog = true }
@@ -161,17 +172,17 @@ fun HistoryItem(
         AlertDialog(
             icon = { Icon(Icons.Default.Warning, contentDescription = null) },
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Confirm Deletion") },
-            text = { Text("Are you sure you want to delete this history?") },
+            title = { Text("Confirm Deletion", fontFamily = poppinsFamily) },
+            text = { Text("Are you sure you want to delete this history?", fontFamily = poppinsFamily) },
             confirmButton = {
                 TextButton(
                     onClick = {
                         historyVM.deleteHistory(history)
                         showDeleteDialog = false
-                    }) { Text("Delete") }
+                    }) { Text("Delete", fontFamily = poppinsFamily) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel", fontFamily = poppinsFamily) }
             }
         )
     }
@@ -184,15 +195,19 @@ fun HistoryItem(
                 .fillMaxWidth()
                 .background(Color(0xFF1E1E1E))
                 .padding(12.dp)
+                .height(70.dp)
         ) {
-            Column(modifier = modifier) {
+            Column {
                 Text(it.title,
                     color = Color.White,
-                    fontSize = 15.sp
+                    fontSize = 14.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold,
                 )
                 Text(formatTimestamp(history.viewedAt),
-                    color = Color.White,
-                    fontSize = 15.sp
+                    color = Color(0xC8FFFFFF),
+                    fontSize = 13.sp,
+                    fontFamily = poppinsFamily,
                 )
             }
             Column() {
@@ -205,7 +220,7 @@ fun HistoryItem(
                 }
             }
         }
-        Spacer(modifier.height(18.dp))
+        Spacer(modifier.height(20.dp))
     }
 }
 

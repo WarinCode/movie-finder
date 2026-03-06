@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moviefinder.R
 import com.example.moviefinder.auth.AuthViewModel
+import com.example.moviefinder.font.poppinsFamily
 
 
 @Composable
@@ -93,10 +94,10 @@ fun SignInScreen(
                 showForgotDialog = false
                 resetEmail = ""
             },
-            title = { Text("Forgot password") },
+            title = { Text("Forgot password", fontFamily = poppinsFamily) },
             text = {
                 Column {
-                    Text("Enter the email address you used to register The system will send you a password reset link")
+                    Text("Enter the email address you used to register The system will send you a password reset link", fontFamily = poppinsFamily)
                     Spacer(Modifier.height(12.dp))
                     OutlinedTextField(
                         value = resetEmail,
@@ -116,13 +117,13 @@ fun SignInScreen(
                         resetEmail = ""
                     },
                     enabled = resetEmail.isNotBlank(),
-                ) { Text("ส่ง Email", color = Color(0xFF6D9E51)) }
+                ) { Text("Send Email", fontFamily = poppinsFamily, color = Color.Blue) }
             },
             dismissButton = {
                 TextButton(onClick = {
                     showForgotDialog = false
                     resetEmail = ""
-                }) { Text("ยกเลิก", color = Color.Gray) }
+                }) { Text("Cancel", fontFamily = poppinsFamily, color = Color.Gray) }
             }
         )
     }
@@ -136,10 +137,12 @@ fun SignInScreen(
     ) {
         Text("Movie",
             fontSize = 60.sp,
+            fontFamily = poppinsFamily,
             fontWeight = FontWeight.Bold
         )
         Text("Finder",
-            fontSize = 54.sp,
+            fontSize = 51.sp,
+            fontFamily = poppinsFamily,
             fontWeight = FontWeight.Bold
         )
         Spacer(Modifier.height(45.dp))
@@ -147,7 +150,7 @@ fun SignInScreen(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Enter your email") },
+            label = { Text("Enter your email", fontFamily = poppinsFamily) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             leadingIcon = {
                 IconButton(onClick = {}) {
@@ -163,7 +166,7 @@ fun SignInScreen(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Enter your password") },
+            label = { Text("Enter your password", fontFamily = poppinsFamily) },
             visualTransformation = if (passVisible) VisualTransformation.None else PasswordVisualTransformation(),
             leadingIcon = {
                 IconButton(onClick = {}) {
@@ -193,7 +196,11 @@ fun SignInScreen(
                 resetEmail = email
                 showForgotDialog = true
             }) {
-                Text("Forgot password?", color = Color.Blue)
+                Text("Forgot password?",
+                    fontFamily = poppinsFamily,
+                    fontSize = 12.sp,
+                    color = Color.Blue
+                )
             }
         }
 
@@ -214,6 +221,7 @@ fun SignInScreen(
         ) {
             Text("Sign In",
                 color = Color.White,
+                fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -231,7 +239,8 @@ fun SignInScreen(
                 text = "or sign in with",
                 modifier = Modifier.padding(horizontal = 16.dp),
                 color = Color.Gray,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                fontFamily = poppinsFamily,
             )
             HorizontalDivider(modifier = Modifier.weight(1f))
         }
@@ -279,9 +288,12 @@ fun SignInScreen(
             }
         }
 
-        Spacer(modifier.height(30.dp))
+        Spacer(modifier.height(80.dp))
         TextButton(onClick = onNavigateToRegister) {
-            Text("Create Account", color = Color.Blue)
+            Text("Create Account",
+                fontFamily = poppinsFamily,
+                color = Color.Blue
+            )
         }
     }
 }

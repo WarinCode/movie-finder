@@ -5,14 +5,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
@@ -36,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -46,11 +54,13 @@ import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import com.example.moviefinder.screen.SignInScreen
 import com.example.moviefinder.auth.AuthViewModel
+import com.example.moviefinder.font.poppinsFamily
 import com.example.moviefinder.screen.HistoryScreen
 import com.example.moviefinder.screen.HomeScreen
 import com.example.moviefinder.screen.LikeScreen
 import com.example.moviefinder.screen.MovieDetailScreen
 import com.example.moviefinder.screen.SignUpScreen
+import com.example.moviefinder.screen.UserProfileScreen
 import com.example.moviefinder.ui.theme.MovieFinderTheme
 
 class MainActivity : ComponentActivity() {
@@ -72,15 +82,20 @@ class MainActivity : ComponentActivity() {
 fun LayoutScreen(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf(0) }
-    val items = listOf("home", "search", "like", "history")
-    val iconsmenu = listOf(Icons.Default.Home, Icons.Default.Search, Icons.Default.FavoriteBorder, Icons.Default.History)
+    val items = listOf("home", "search", "like", "user-profile", "history")
+    val iconsmenu = listOf(
+        Icons.Default.Home,
+        Icons.Default.Search,
+        Icons.Default.Favorite,
+        Icons.Default.AccountBox,
+        Icons.Default.History
+    )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val authVM = viewModel<AuthViewModel>()
     val user = authVM.currentUser
     val startDestination = if (authVM.isLoggedIn) "home" else "signin"
-//    val startDestination = "movie-detail/0AjcBEcd9WjIgOl59Wqs"
     val defaultAvatar = "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg"
 
     Scaffold(
@@ -90,9 +105,13 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                     containerColor = Color(0xFF1A1919),
                     titleContentColor = Color(0xFFFEFFFF)
                 ),
-                title = { Text("Movie Finder") },
+                title = { Text("Movie Finder", fontFamily = poppinsFamily) },
                 actions = {
-                    Text("${user.displayName ?: user.email}", color = Color.White)
+                    Text("${user.displayName ?: user.email}",
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        fontFamily = poppinsFamily,
+                    )
                     Spacer(modifier = modifier.width(12.dp))
                     AsyncImage(
                         model = user.photoUrl ?: defaultAvatar,
@@ -100,7 +119,9 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .size(40.dp)
                             .clip(RoundedCornerShape(50.dp))
+                            .border(0.8.dp, Color(0xC6FFFFFF), RoundedCornerShape(50.dp))
                     )
+                    Spacer(modifier = modifier.width(10.dp))
                     IconButton(onClick = {
                         authVM.logout()
                         navController.navigate("signin") {
@@ -121,24 +142,37 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                 containerColor = Color(0xFF1A1919),
                 contentColor = Color(0xFFFEFFFF)
             ) {
-                items.forEachIndexed { index, item ->
-                    NavigationBarItem (
-                        icon = { Icon(iconsmenu[index], contentDescription = item, modifier = Modifier.size(30.dp)) },
-                        selected = selectedItem == index,
-                        onClick = { selectedItem = index
-                            when(index) {
-                                0 -> navController.navigate("home")
-                                1 -> navController.navigate("search")
-                                2 -> navController.navigate("like")
-                                3 -> navController.navigate("history")
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
-                            unselectedIconColor = Color.White,
-                            indicatorColor = Color(0xFF3D3D3D)
-                        ),
-                    )
+                Row(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp)
+                ) {
+                    items.forEachIndexed { index, item ->
+                        NavigationBarItem (
+                            icon = { Icon(
+                                imageVector = iconsmenu[index],
+                                contentDescription = item,
+                                modifier = Modifier.size(30.dp)
+                            )},
+                            selected = selectedItem == index,
+                            onClick = { selectedItem = index
+                                when(index) {
+                                    0 -> navController.navigate("home")
+                                    1 -> navController.navigate("search")
+                                    2 -> navController.navigate("like")
+                                    3 -> navController.navigate("user-profile")
+                                    4 -> navController.navigate("history")
+                                }
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = Color.White,
+                                unselectedIconColor = Color.White,
+                                indicatorColor = Color(0xFF3D3D3D)
+                            ),
+                            modifier = modifier.clip(RoundedCornerShape(60.dp))
+
+                        )
+                    }
                 }
             }
         },
@@ -191,9 +225,8 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                     }
                 )
             }
-            composable (route = "like"){
-                LikeScreen(navController = navController)
-            }
+            composable (route = "like"){ LikeScreen(navController = navController) }
+            composable (route = "user-profile") { UserProfileScreen() }
             composable(route = "history") { HistoryScreen() }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.moviefinder.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,6 +41,7 @@ import coil.compose.AsyncImage
 import com.example.moviefinder.auth.AuthViewModel
 import com.example.moviefinder.firebase.FavoriteViewModel
 import com.example.moviefinder.firebase.MovieViewModel
+import com.example.moviefinder.font.poppinsFamily
 import com.example.moviefinder.model.Favorite
 import com.example.moviefinder.model.Movie
 
@@ -89,7 +92,8 @@ fun MovieDetailScreen(
             Spacer(modifier.height(20.dp))
             Text(movieData.title,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppinsFamily,
             )
             Spacer(modifier.height(10.dp))
             Row(
@@ -108,7 +112,10 @@ fun MovieDetailScreen(
                         modifier = modifier.size(35.dp)
                     )
                 }
-                Text("Rating: ${movieData.vote_average}", fontSize = 16.sp)
+                Text("Rating: ${movieData.vote_average}",
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                )
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -123,22 +130,34 @@ fun MovieDetailScreen(
                     Icon(
                         imageVector = Icons.Default.WhereToVote,
                         contentDescription = "Vote",
-                        modifier = modifier.size(31.dp)
+                        modifier = modifier.size(31.dp),
                     )
                 }
-                Text("Vote: ${movieData.vote_count}", fontSize = 16.sp)
+                Text("Vote: ${movieData.vote_count}",
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                )
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,
                 modifier = modifier.fillMaxWidth(),
             ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarMonth,
-                    contentDescription = "Release date",
-                    modifier = modifier.size(31.dp)
+                IconButton(
+                    onClick = {},
+                    colors = IconButtonDefaults
+                        .iconButtonColors(contentColor = Color(0xFF343434)),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = "Release date",
+                        modifier = modifier.size(31.dp)
+                    )
+                }
+                Text("Release Date: ${movieData.release_date}",
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
                 )
-                Text("Release Date: ${movieData.release_date}", fontSize = 16.sp)
             }
             movieData.genres.let {
                 Row(
@@ -149,9 +168,15 @@ fun MovieDetailScreen(
                     movieData.genres.forEach { genres ->
                         OutlinedButton(
                             onClick = {},
+                            border = BorderStroke(1.dp, Color.Blue),
                             modifier = modifier.padding(5.dp)
                         ) {
-                            Text("${genres.name}")
+                            Text("${genres.name}",
+                                color = Color.Blue,
+                                fontFamily = poppinsFamily,
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.SemiBold,
+                            )
                         }
                     }
                 }
@@ -161,6 +186,7 @@ fun MovieDetailScreen(
                 modifier = modifier.fillMaxWidth(),
                 fontSize = 17.sp,
                 lineHeight = 25.sp,
+                fontFamily = poppinsFamily,
             )
             Spacer(modifier.height(20.dp))
 
