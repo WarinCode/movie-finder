@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import com.example.moviefinder.util.dotenv
 import com.google.firebase.auth.OAuthProvider
 
 class AuthViewModel : ViewModel() {
@@ -108,7 +107,7 @@ class AuthViewModel : ViewModel() {
 
                 // https://console.cloud.google.com/auth/clients
                 val signInWithGoogleOption = GetSignInWithGoogleOption
-                    .Builder(dotenv["GOOGLE_WEB_CLIENT_ID"])
+                    .Builder("726732973486-id3dg4ahj60gh2c4mt1g2b1v1so306cn.apps.googleusercontent.com")
                     .build()
 
                 val request = GetCredentialRequest.Builder()
