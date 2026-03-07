@@ -155,27 +155,4 @@ class AuthViewModel : ViewModel() {
                 }
         }
     }
-
-    fun signInWithMicrosoft(activity: Activity){
-        val provider = OAuthProvider.newBuilder("microsoft.com")
-
-        _authState.value = AuthState.Loading
-
-        val pending = auth.pendingAuthResult
-        if (pending != null) {
-            pending.addOnSuccessListener {
-                _authState.value = AuthState.Success
-            }.addOnFailureListener {
-                _authState.value = AuthState.Error(it.message ?: "Microsoft Login Failed")
-            }
-        } else {
-            auth.startActivityForSignInWithProvider(activity, provider.build())
-                .addOnSuccessListener { authResult ->
-                    _authState.value = AuthState.Success
-                }
-                .addOnFailureListener { e ->
-                    _authState.value = AuthState.Error(e.message ?: "GitHub Login Error")
-                }
-        }
-    }
 }

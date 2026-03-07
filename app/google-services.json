@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "726732973486-6r8sdqc1nqqs28hnn7c9mi8p6fmpu0jt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.moviefinder",
+            "certificate_hash": "ca61295fd4827ab9913403f049084d62eb53103c"
+          }
+        },
+        {
+          "client_id": "726732973486-f53fkg05anvmmg80amghn0ebcla6sv21.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.moviefinder",
+            "certificate_hash": "c78a56aec301fa3f34a617bdb19a3bd826391409"
+          }
+        },
+        {
           "client_id": "726732973486-id3dg4ahj60gh2c4mt1g2b1v1so306cn.apps.googleusercontent.com",
           "client_type": 3
         }

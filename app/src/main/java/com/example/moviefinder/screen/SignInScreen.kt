@@ -263,18 +263,6 @@ fun SignInScreen(
                 )
             }
             IconButton(
-                onClick = { activity?.let { authVM.signInWithMicrosoft(activity) } },
-                modifier = Modifier
-                    .size(56.dp)
-                    .border(1.dp, Color.LightGray, CircleShape)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.microsoft),
-                    contentDescription = "Sign in with Microsoft",
-                    modifier = Modifier.size(30.dp)
-                )
-            }
-            IconButton(
                 onClick = { activity?.let { authVM.signInWithGithub(activity) } },
                 modifier = Modifier
                     .size(56.dp)
