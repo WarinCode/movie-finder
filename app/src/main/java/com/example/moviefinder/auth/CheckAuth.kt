@@ -43,7 +43,6 @@ class AuthViewModel : ViewModel() {
         data class Error(val message: String) : AuthState()
     }
 
-    //------------------ ลงทะเบียนใช้งาน ------------------
     fun register(email: String, password: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
@@ -56,7 +55,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    //------------------ รีเซตรหัสผ่าน ------------------
     fun resetPassword(email: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
@@ -74,7 +72,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    //------------------ ล็อกอินด้วยอีเมล์ ------------------
     fun loginWithEmail(email: String, password: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
@@ -88,8 +85,6 @@ class AuthViewModel : ViewModel() {
     }
 
 
-
-    //------------------ ออกจากระบบ ------------------
     fun logout() {
         auth.signOut()
         _authState.value = AuthState.Idle

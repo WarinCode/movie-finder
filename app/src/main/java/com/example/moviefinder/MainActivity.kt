@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -107,32 +109,25 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                 ),
                 title = { Text("Movie Finder", fontFamily = poppinsFamily) },
                 actions = {
-                    Text("${user.displayName ?: user.email}",
-                        color = Color.White,
-                        fontSize = 14.sp,
-                        fontFamily = poppinsFamily,
-                    )
-                    Spacer(modifier = modifier.width(12.dp))
-                    AsyncImage(
-                        model = user.photoUrl ?: defaultAvatar,
-                        contentDescription = user.displayName ?: "Profile user",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(50.dp))
-                            .border(0.8.dp, Color(0xC6FFFFFF), RoundedCornerShape(50.dp))
-                    )
-                    Spacer(modifier = modifier.width(10.dp))
-                    IconButton(onClick = {
-                        authVM.logout()
-                        navController.navigate("signin") {
-                            popUpTo("signin") { inclusive = true }
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Sign out",
-                            tint = Color.White
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = modifier.clickable { navController.navigate("user-profile") }
+                    ) {
+                        Text("${user.displayName ?: user.email}",
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontFamily = poppinsFamily,
                         )
+                        Spacer(modifier = modifier.width(12.dp))
+                        AsyncImage(
+                            model = user.photoUrl ?: defaultAvatar,
+                            contentDescription = user.displayName ?: "Profile user",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(50.dp))
+                                .border(0.8.dp, Color(0xC6FFFFFF), RoundedCornerShape(50.dp))
+                        )
+                        Spacer(modifier = modifier.width(12.dp))
                     }
                 }
             )
@@ -226,7 +221,9 @@ fun LayoutScreen(modifier: Modifier = Modifier) {
                 )
             }
             composable (route = "like"){ LikeScreen(navController = navController) }
-            composable (route = "user-profile") { UserProfileScreen() }
+            composable (route = "user-profile") {
+                UserProfileScreen(navController = navController)
+            }
             composable(route = "history") { HistoryScreen() }
         }
     }
