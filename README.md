@@ -133,7 +133,7 @@ git clone https://github.com/WarinCode/movie-finder.git
 ---
 
 ## ลิ้งค์วิดีโอ
-
+ดูตัวอย่างการใช้งานแอปพลิเคชั่นได้ที่ลิ้งค์นี้ [Google Drive](https://drive.google.com/drive/folders/17cmtdSybfp7wyx2RmmWhwzwDWoB4J5HQ?usp=sharing)
 
 ---
 
