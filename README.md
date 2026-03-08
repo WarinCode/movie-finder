@@ -12,7 +12,8 @@
 3. [ฟีเจอร์](#ฟีเจอร์)
 4. [การติดตั้งและใช้งาน](#การติดตั้งและใช้งาน)
 5. [ภาพตัวอย่าง](#ภาพตัวอย่าง)
-6. [สมาชิกในกลุ่ม](#สมาชิกในกลุ่ม)
+6. [ลิ้งค์วิดีโอ](#ลิ้งค์วิดีโอ)
+7. [สมาชิกในกลุ่ม](#สมาชิกในกลุ่ม)
 
 ## การออกแบบ
 ลิ้งค์การออกแบบตัว ui สำหรับ prototype ต้นแบบของแอปพลิเคชั่นนี้เปิดได้ที่ [Figma](https://www.figma.com/design/ufVhM2TXOv6bg7LHA0FjE6/Movie-Finder---Prototype-?node-id=0-1&t=LncuSNaZ38SaEcjb-1)
@@ -24,13 +25,15 @@
 ---
 
 ## ฟีเจอร์
-- ดูข้อมูลหนังทั้งหมด
+- ดูข้อมูลหนังภาพยนตร์ทั้งหมด
 - ดูข้อมูลรายละเอียดหนังภาพยนตร์
-- ระบบสมัครสมาชิกและการเข้าสู่ระบบด้วย Email, Google, Github และ Microsoft
+- ระบบสมัครสมาชิกและการเข้าสู่ระบบด้วย Email, Google และ Github
+- การแก้ไขรหัสผ่านของบัญชีที่ผูกกับบัญชี Email
 - ระบบค้นหาชื่อหนังภาพยนตร์
-- ระบบการกดไลค์ชอบหนัง
+- ระบบการกดไลค์ชอบหนังภาพยนตร์
 - การเก็บประวัติการเข้าชม
 - ดูข้อมูลโปรไฟล์ผู้ใช้งาน
+- ลบบัญชีผู้ใช้งาน
 
 ---
 
@@ -43,15 +46,94 @@ git clone https://github.com/WarinCode/movie-finder.git
 
 2. เปิด Android Studio แล้วเปิดโฟลเดอร์ชื่อ `movie-finder`
 3. ทำการกด build ตัวโปรเจค
-4. เมื่อ build เสร็จทำการกดรันเพิ่อเปิดตัว emulator ได้เลย
+4. เมื่อ build เสร็จทำการกดรัน
 5. จะเจอหน้าแอปพลิเคชั่นเพื่อใช้งาน
 
 ---
 
 ## ภาพตัวอย่าง
 
-![sign in](./img/screenshot/Screenshot_1.png)
-![sign up](./img/screenshot/Screenshot_2.png)
+<p>หน้า Sign In</p>
+<img src="./img/screenshot/signin.png" width="190px" height="400px"  />
+
+<br/>
+
+<p>หน้า Sign Up</p>
+<img src="./img/screenshot/signup.png" width="190px" height="400px"  />
+
+<br/>
+
+<p>หน้า Home</p>
+<img src="./img/screenshot/home.png" width="190px" height="400px"  />
+
+<br/>
+
+<img src="./img/screenshot/home2.png" width="190px" height="400px"  />
+
+<br/>
+
+<p>หน้าแสดงรายละเอียดหนัง</p>
+<img src="./img/screenshot/movie-detail.png" width="190px" height="400px"  />
+
+<br />
+
+<img src="./img/screenshot/movie-detail2.png" width="190px" height="400px"  />
+
+<br/>
+
+<p>การกกดไลค์</p>
+<img src="./img/screenshot/like.png" width="190px" height="400px"  />
+
+<br />
+
+<img src="./img/screenshot/like2.png" width="190px" height="400px"  />
+
+<br />
+
+<p>หน้าแสดงการกดไลค์</p>
+
+<img src="./img/screenshot/like3.png" width="190px" height="400px"  />
+
+<br />
+
+<p>หน้าค้นหาหนัง</p>
+
+<img src="./img/screenshot/search-movie.png" width="190px" height="400px"  />
+
+<br />
+
+<img src="./img/screenshot/search-movie2.png" width="190px" height="400px"  />
+
+<br />
+
+<img src="./img/screenshot/search-movie3.png" width="190px" height="400px"  />
+
+<br />
+
+<p>หน้าประวัติการเข้าชม</p>
+
+<img src="./img/screenshot/history.png" width="190px" height="400px"  />
+
+<br />
+
+<img src="./img/screenshot/history2.png" width="190px" height="400px"  />
+
+<br />
+
+<img src="./img/screenshot/history3.png" width="190px" height="400px"  />
+
+<br />
+
+<p>หน้าโปรไฟล์ผู้ใช้งาน</p>
+
+<img src="./img/screenshot/user-profile.png" width="190px" height="400px"  />
+
+<br />
+
+---
+
+### ลิ้งค์วิดีโอ
+
 
 ---
 

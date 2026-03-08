@@ -17,7 +17,7 @@ class FirestoreMovieDataSource {
     private val collection = Firebase.firestore.collection("movies")
 
     fun getAll(): Flow<List<Movie>> = callbackFlow {
-        val listener = collection.limit(300).addSnapshotListener { snapshot, error ->
+        val listener = collection.limit(1500).addSnapshotListener { snapshot, error ->
             if (error != null) {
                 close(error)
                 return@addSnapshotListener
