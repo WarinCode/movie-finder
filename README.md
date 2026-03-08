@@ -19,8 +19,8 @@
 ลิ้งค์การออกแบบตัว ui สำหรับ prototype ต้นแบบของแอปพลิเคชั่นนี้เปิดได้ที่ [Figma](https://www.figma.com/design/ufVhM2TXOv6bg7LHA0FjE6/Movie-Finder---Prototype-?node-id=0-1&t=LncuSNaZ38SaEcjb-1)
 
 ## รายละเอียดโปรเจค
-ทำโปรเจค Android Application โดยใช้ภาษา Kotlin และ Jetpack Compose UI ในการพัฒนาแอปพลิเคชั่นแล้วมีการเชื่อมต่อฐานข้อมูลแบบ NoSQL 
-อย่าง Firebase Firestore ใช้ในการเก็บข้อมูลและดำนำการ CRUD Operations ภายในแอปพลิเคชั่น เกี่ยวกับแอปพลิเคชั่นนี้ เป็นแอปหาดูรายการหนังภาพยนตร์ออนไลน์ โดยแย่งแบ่งเป็นฟีเจอรืหลักๆดังนี้
+โปรเจคนี้เป็นส่วนหนึ่งของวิชา Mobile Application Design and Development รหัสวิชา 01418342 พวกเราได้ทำการพัฒนา Android Application โดยใช้ภาษา Kotlin และ Jetpack Compose UI ในการพัฒนาแอปพลิเคชั่นแล้วมีการเชื่อมต่อฐานข้อมูลแบบ NoSQL 
+อย่าง Firebase Firestore ใช้ในการเก็บข้อมูลและดำนำการ CRUD Operations ภายในแอปพลิเคชั่น เกี่ยวกับแอปพลิเคชั่นนี้ เป็นแอปหาดูรายการหนังภาพยนตร์ออนไลน์ โดยแบ่งเป็นฟีเจอร์หลักๆดังนี้
 
 ---
 
@@ -132,7 +132,7 @@ git clone https://github.com/WarinCode/movie-finder.git
 
 ---
 
-### ลิ้งค์วิดีโอ
+## ลิ้งค์วิดีโอ
 
 
 ---
