@@ -29,7 +29,6 @@ for (const result of results.values()) {
   }
 }
 // console.log(availableItems);
-// 5ป อิืใๅ/-ภถุึคตจข 
 console.log(`จำนวนหนังทั้งหมด: ${availableItems.length}`);
 
 const file: BunFile = Bun.file("./data/movie_details.json");
