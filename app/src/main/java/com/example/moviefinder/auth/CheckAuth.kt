@@ -102,7 +102,7 @@ class AuthViewModel : ViewModel() {
 
                 // https://console.cloud.google.com/auth/clients
                 val signInWithGoogleOption = GetSignInWithGoogleOption
-                    .Builder("726732973486-id3dg4ahj60gh2c4mt1g2b1v1so306cn.apps.googleusercontent.com")
+                    .Builder("WEB_CLIENT_ID")
                     .build()
 
                 val request = GetCredentialRequest.Builder()
